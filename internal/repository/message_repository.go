@@ -6,20 +6,18 @@ import (
 )
 
 type MessageRepository struct {
-	Cluster *gocb.Cluster
+	cluster *gocb.Cluster
 }
 
 func NewMessageRepository(cluster *gocb.Cluster) *MessageRepository {
-	return &MessageRepository{
-		Cluster: cluster,
-	}
+	return &MessageRepository{cluster: cluster}
 }
 
 const MessageLimit = 2
 
 func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error) {
 	query := "SELECT u.* FROM messages AS u WHERE u.status = $status LIMIT $limit"
-	result, err := r.Cluster.Query(query, &gocb.QueryOptions{
+	result, err := r.cluster.Query(query, &gocb.QueryOptions{
 		NamedParameters: map[string]any{
 			"status": status,
 			"limit":  limit,
@@ -48,7 +46,7 @@ func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) 
 func (r *MessageRepository) UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error) {
 	msg.Status = status
 
-	_, err := r.Cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)
+	_, err := r.cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)
 	if err != nil {
 		return msg, err
 	}

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/SevcanDogramaci/message-sending-scheduler/config"
-	client "github.com/SevcanDogramaci/message-sending-scheduler/internal/client/webhook-site"
+	client "github.com/SevcanDogramaci/message-sending-scheduler/internal/client/webhook_site"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/model"
 	"github.com/stretchr/testify/assert"
 )

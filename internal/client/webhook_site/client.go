@@ -12,12 +12,12 @@ import (
 )
 
 type WebhookSiteClient struct {
-	URL    string
+	url    string
 	apiKey string
 }
 
 func NewWebhookSiteClient(config *config.ClientConfig) *WebhookSiteClient {
-	return &WebhookSiteClient{URL: config.URL, apiKey: config.APIKey}
+	return &WebhookSiteClient{url: config.URL, apiKey: config.APIKey}
 }
 
 type MessageDTO struct {
@@ -36,7 +36,7 @@ func (c *WebhookSiteClient) Send(message model.Message) error {
 		return err
 	}
 
-	request, err := http.NewRequest(http.MethodPost, c.URL, bytes.NewBuffer(messageJSON))
+	request, err := http.NewRequest(http.MethodPost, c.url, bytes.NewBuffer(messageJSON))
 	if err != nil {
 		return err
 	}
