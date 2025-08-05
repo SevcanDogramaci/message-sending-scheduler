@@ -5,6 +5,7 @@ import (
 
 	"github.com/SevcanDogramaci/message-sending-scheduler/config"
 	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/redis"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,6 +24,11 @@ func TestInitConfig_GivenEnv_ThenItShouldReadConfig(t *testing.T) {
 		Webhook: &config.ClientConfig{
 			URL:    "https://test.webhook.site/test-token",
 			APIKey: "test-api-key",
+		},
+		Redis: &redis.Config{
+			Host:     "test:6379",
+			Password: "test-password",
+			DB:       1,
 		},
 	}
 	actualConfig, err := config.InitConfigs(env)

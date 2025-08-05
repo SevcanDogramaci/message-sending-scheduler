@@ -1,11 +1,15 @@
 package config
 
-import "github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
+import (
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/redis"
+)
 
 type AppConfig struct {
 	Scheduler *SchedulerConfig  `json:"scheduler"`
 	Couchbase *couchbase.Config `json:"couchbase"`
 	Webhook   *ClientConfig     `json:"webhook"`
+	Redis     *redis.Config		`json:"redis"`
 }
 
 type ClientConfig struct {

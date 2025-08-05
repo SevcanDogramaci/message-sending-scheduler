@@ -18,6 +18,14 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
   app:
     build:
       context: .
@@ -26,6 +34,8 @@ services:
     depends_on:
       couchbase:
         condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - "8080:8080"
     environment:
@@ -33,3 +43,4 @@ services:
 
 volumes:
   cb-data:
+  redis_data:

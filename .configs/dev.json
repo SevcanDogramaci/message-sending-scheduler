@@ -11,5 +11,10 @@
     "webhook": {
         "url": "https://webhook.site/8aa81d88-dcd2-4cc9-8a7a-90c9b90ba90c",
         "api_key": "INS.me1x9uMcyYGlhKKQVPoc.bO3j9aZwRTOcA2Ywo"
+    },
+    "redis": {
+        "host": "localhost:6379",
+        "password": "password",
+        "db": 1
     }
 }

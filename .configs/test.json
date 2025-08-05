@@ -11,5 +11,10 @@
     "webhook": {
         "url": "https://test.webhook.site/test-token",
         "api_key": "test-api-key"
+    },
+    "redis": {
+        "host": "test:6379",
+        "password": "test-password",
+        "db": 1
     }
 }
