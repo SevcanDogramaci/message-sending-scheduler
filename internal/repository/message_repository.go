@@ -46,7 +46,7 @@ func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) 
 }
 
 func (r *MessageRepository) UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error) {
-	msg.Status = model.StatusSent
+	msg.Status = status
 
 	_, err := r.Cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)
 	if err != nil {
