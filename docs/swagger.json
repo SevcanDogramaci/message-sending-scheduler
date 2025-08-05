@@ -23,7 +23,8 @@
                         "type": "string",
                         "description": "Filter by status",
                         "name": "status",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -32,7 +33,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message"
+                                "$ref": "#/definitions/model.Message"
                             }
                         }
                     }
@@ -67,7 +68,7 @@
         }
     },
     "definitions": {
-        "github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message": {
+        "model.Message": {
             "type": "object",
             "properties": {
                 "content": {
@@ -83,11 +84,11 @@
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status"
+                    "$ref": "#/definitions/model.Status"
                 }
             }
         },
-        "github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status": {
+        "model.Status": {
             "type": "string",
             "enum": [
                 "UNSENT",

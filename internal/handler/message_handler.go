@@ -22,7 +22,7 @@ func NewMessageHandler(messageService MessageService) *MessageHandler {
 //	@Summary	Get messages by status
 //	@Tags		messages
 //	@Produce	json
-//	@Param		status	query	model.Status	false	"Filter by status"
+//	@Param		status	query	model.Status	true	"Filter by status"
 //	@Success	200		{array}	model.Message
 //	@Router		/messages [get]
 func (h *MessageHandler) GetMessages(c *fiber.Ctx) error {

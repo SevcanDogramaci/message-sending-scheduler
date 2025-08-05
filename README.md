@@ -51,5 +51,5 @@ make tests
 Swagger docs are located in main path of your application. Go to <http://localhost:8080>.
 
 ```
-swag init -g cmd/main.go -o docs --parseDependency --parseInternal
+swag init -g main.go -o docs --parseDependency --parseInternal
 ```

@@ -34,7 +34,8 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Filter by status",
                         "name": "status",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -43,7 +44,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message"
+                                "$ref": "#/definitions/model.Message"
                             }
                         }
                     }
@@ -78,7 +79,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message": {
+        "model.Message": {
             "type": "object",
             "properties": {
                 "content": {
@@ -94,11 +95,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status"
+                    "$ref": "#/definitions/model.Status"
                 }
             }
         },
-        "github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status": {
+        "model.Status": {
             "type": "string",
             "enum": [
                 "UNSENT",

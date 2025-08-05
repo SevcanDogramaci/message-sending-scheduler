@@ -1,5 +1,5 @@
 definitions:
-  github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message:
+  model.Message:
     properties:
       content:
         type: string
@@ -10,9 +10,9 @@ definitions:
       sender_phone_no:
         type: string
       status:
-        $ref: '#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status'
+        $ref: '#/definitions/model.Status'
     type: object
-  github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status:
+  model.Status:
     enum:
     - UNSENT
     - SENT
@@ -35,6 +35,7 @@ paths:
         - REJECTED
         in: query
         name: status
+        required: true
         type: string
       produces:
       - application/json
@@ -43,7 +44,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message'
+              $ref: '#/definitions/model.Message'
             type: array
       summary: Get messages by status
       tags:
