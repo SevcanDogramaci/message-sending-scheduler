@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  couchbase:
+    image: couchbase:community
+    container_name: couchbase
+    ports:
+      - "8091-8096:8091-8096"
+      - "11210:11210"        
+    environment:
+      COUCHBASE_ADMINISTRATOR_USERNAME: Administrator
+      COUCHBASE_ADMINISTRATOR_PASSWORD: password
+    volumes:
+      - cb-data:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8091/pools"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-app
+    depends_on:
+      couchbase:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: dev
+
+volumes:
+  cb-data:

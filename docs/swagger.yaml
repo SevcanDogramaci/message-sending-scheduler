@@ -1,0 +1,67 @@
+definitions:
+  github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message:
+    properties:
+      content:
+        type: string
+      id:
+        type: string
+      recipient_phone_no:
+        type: string
+      sender_phone_no:
+        type: string
+      status:
+        $ref: '#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status'
+    type: object
+  github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Status:
+    enum:
+    - UNSENT
+    - SENT
+    - REJECTED
+    type: string
+    x-enum-varnames:
+    - StatusUnsent
+    - StatusSent
+    - StatusRejected
+info:
+  contact: {}
+paths:
+  /messages:
+    get:
+      parameters:
+      - description: Filter by status
+        enum:
+        - UNSENT
+        - SENT
+        - REJECTED
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_SevcanDogramaci_message-sending-scheduler_internal_model.Message'
+            type: array
+      summary: Get messages by status
+      tags:
+      - messages
+  /scheduler/start:
+    post:
+      responses:
+        "200":
+          description: OK
+      summary: Start scheduler
+      tags:
+      - scheduler
+  /scheduler/stop:
+    post:
+      responses:
+        "200":
+          description: OK
+      summary: Stop scheduler
+      tags:
+      - scheduler
+swagger: "2.0"

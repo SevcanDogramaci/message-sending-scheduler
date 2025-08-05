@@ -1,0 +1,15 @@
+{
+    "scheduler": {
+        "period_secs": 60
+    },
+    "couchbase": {
+        "host": "localhost:8091",
+        "username": "Administrator",
+        "password": "password",
+        "wait_until_ready_secs": 5
+    },
+    "webhook": {
+        "url": "https://webhook.site/8aa81d88-dcd2-4cc9-8a7a-90c9b90ba90c",
+        "api_key": "INS.me1x9uMcyYGlhKKQVPoc.bO3j9aZwRTOcA2Ywo"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "scheduler": {
+        "period_secs": 10
+    },
+    "couchbase": {
+        "host": "test:8091",
+        "username": "test-username",
+        "password": "test-password",
+        "wait_until_ready_secs": 5
+    },
+    "webhook": {
+        "url": "https://test.webhook.site/test-token",
+        "api_key": "test-api-key"
+    }
+}
