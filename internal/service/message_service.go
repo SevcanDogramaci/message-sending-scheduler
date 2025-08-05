@@ -6,16 +6,16 @@ import (
 )
 
 type CacheRepository interface {
-	SetMessage(metadata model.TransferMetadata) error
+	SetMessage(metadata *model.TransferMetadata) error
 }
 
 type MessageRepository interface {
-	GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error)
-	UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error)
+	GetMessagesByStatus(status model.Status, limit int) ([]*model.Message, error)
+	UpdateMessageStatus(msg *model.Message, status model.Status) (*model.Message, error)
 }
 
 type MessageClient interface {
-	Send(message model.Message) (*model.TransferMetadata, error)
+	Send(message *model.Message) (*model.TransferMetadata, error)
 }
 
 type MessageService struct {
@@ -35,7 +35,7 @@ func NewMessageService(client MessageClient, repository MessageRepository, cache
 const SendMessageLimit = 2
 const DefaultMessageLimit = 1000
 
-func (ms *MessageService) GetMessages(status model.Status) ([]model.Message, error) {
+func (ms *MessageService) GetMessages(status model.Status) ([]*model.Message, error) {
 	if !status.IsValid() {
 		return nil, model.ErrorInvalidMessageStatus
 	}
@@ -78,13 +78,13 @@ func (ms *MessageService) SendMessages() error {
 			return err
 		}
 
-		msg, err = ms.repository.UpdateMessageStatus(msg, model.StatusSent)
+		_, err = ms.repository.UpdateMessageStatus(msg, model.StatusSent)
 		if err != nil {
 			log.Error("[ACTION REQUIRED] Failed to update message status:", err)
 			return model.ErrorMessageStatusNotUpdated
 		}
 
-		err = ms.cache.SetMessage(*transferMetadata)
+		err = ms.cache.SetMessage(transferMetadata)
 		if err != nil {
 			log.Errorf("Failed to cache message with transfer id: %s", transferMetadata.ID)
 			return model.ErrorMessageTransferNotCached

@@ -20,7 +20,7 @@ func NewWebhookSiteClient(config *config.ClientConfig) *WebhookSiteClient {
 	return &WebhookSiteClient{url: config.URL, apiKey: config.APIKey}
 }
 
-func (c *WebhookSiteClient) Send(message model.Message) (*model.TransferMetadata, error) {
+func (c *WebhookSiteClient) Send(message *model.Message) (*model.TransferMetadata, error) {
 	messageDTO := MessageRequest{
 		To:      message.RecipientPhoneNo,
 		Content: message.Content,

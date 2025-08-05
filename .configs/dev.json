@@ -1,6 +1,6 @@
 {
     "scheduler": {
-        "period_secs": 60
+        "period_secs": 120
     },
     "couchbase": {
         "host": "localhost:8091",

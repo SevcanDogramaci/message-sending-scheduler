@@ -19,12 +19,13 @@ func TestMessage_IsValid(t *testing.T) {
 			expectedResult: true,
 		},
 		{
-			description:    "long content",
-			msg:            model.Message{Content: "veryveryverylongcontent"},
+			description: "long content",
+			msg: model.Message{
+				Content: "veryveryverylongcontentveryveryverylongcontentveryveryverylongcontent"},
 			expectedResult: false,
 		},
 	}
-	
+
 	for _, testCase := range testCases {
 		t.Run(testCase.description, func(t *testing.T) {
 			assert.Equal(t, testCase.expectedResult, testCase.msg.IsValid())

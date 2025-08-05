@@ -17,7 +17,7 @@ func NewCacheRepository(redis *redis.Redis) *CacheRepository {
 	return &CacheRepository{redis: redis}
 }
 
-func (r *CacheRepository) SetMessage(transferMetadata model.TransferMetadata) error {
+func (r *CacheRepository) SetMessage(transferMetadata *model.TransferMetadata) error {
 	ttl := time.Duration(r.redis.Config.DefaultTTLSecs) * time.Second
 
 	transferMetadataBytes, err := json.Marshal(transferMetadata)

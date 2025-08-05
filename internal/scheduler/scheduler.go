@@ -35,6 +35,11 @@ func (s *Scheduler) IsDone() bool {
 }
 
 func (s *Scheduler) Start() error {
+	if s.IsStarted() {
+		log.Println("A scheduler is already running")
+		return nil
+	}
+
 	duration := time.Duration(s.config.PeriodSecs) * time.Second
 	ticker := time.NewTicker(duration)
 	done := make(chan bool)
@@ -59,6 +64,7 @@ func (s *Scheduler) Start() error {
 		}
 	}()
 
+	log.Println("Scheduler started")
 	return nil
 }
 
@@ -66,6 +72,7 @@ func (s *Scheduler) Stop() error {
 	if s.ticker != nil {
 		s.ticker.Stop()
 	}
+	s.ticker = nil
 
 	if s.done != nil {
 		s.done <- true

@@ -6,7 +6,7 @@ import (
 )
 
 type MessageService interface {
-	GetMessages(status model.Status) ([]model.Message, error)
+	GetMessages(status model.Status) ([]*model.Message, error)
 }
 
 type MessageHandler struct {

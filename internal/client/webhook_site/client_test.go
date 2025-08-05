@@ -15,7 +15,7 @@ import (
 const testWebhookSiteAPIKey = "test-api-key"
 
 func TestWebhookClient_GivenUnsentMessage_ThenItShouldSendIt(t *testing.T) {
-	message := model.Message{
+	message := &model.Message{
 		ID:               "test-msg-id",
 		Content:          "test-msg-content",
 		SenderPhoneNo:    "+901111111111",
@@ -52,7 +52,7 @@ func TestWebhookClient_GivenUnsentMessage_ThenItShouldSendIt(t *testing.T) {
 }
 
 func TestWebhookClient_GivenUnsuccessfulResponse_ThenItShouldReturnError(t *testing.T) {
-	message := model.Message{}
+	message := &model.Message{}
 
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func TestWebhookClient_GivenUnsuccessfulResponse_ThenItShouldReturnError(t *test
 }
 
 func TestWebhookClient_GivenBrokenResponse_ThenItShouldReturnError(t *testing.T) {
-	message := model.Message{}
+	message := &model.Message{}
 
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusAccepted)

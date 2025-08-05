@@ -14,9 +14,7 @@ func NewMessageRepository(couchbase *couchbase.Couchbase) *MessageRepository {
 	return &MessageRepository{couchbase: couchbase}
 }
 
-const MessageLimit = 2
-
-func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error) {
+func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]*model.Message, error) {
 	query := "SELECT u.* FROM messages AS u WHERE u.status = $status LIMIT $limit"
 	result, err := r.couchbase.Cluster.Query(query, &gocb.QueryOptions{
 		NamedParameters: map[string]any{
@@ -28,9 +26,9 @@ func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) 
 		return nil, err
 	}
 
-	var messages []model.Message
+	var messages []*model.Message
 	for result.Next() {
-		var msg model.Message
+		var msg *model.Message
 		if err := result.Row(&msg); err != nil {
 			return nil, err
 		}
@@ -44,7 +42,7 @@ func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) 
 	return messages, nil
 }
 
-func (r *MessageRepository) UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error) {
+func (r *MessageRepository) UpdateMessageStatus(msg *model.Message, status model.Status) (*model.Message, error) {
 	msg.Status = status
 
 	_, err := r.couchbase.Cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)

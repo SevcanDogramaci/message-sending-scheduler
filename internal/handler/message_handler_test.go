@@ -20,7 +20,7 @@ func TestGetMessages_GivenStatus_ThenItShouldReturnMessages(t *testing.T) {
 	mockController := gomock.NewController(t)
 	defer mockController.Finish()
 
-	expectedMessages := []model.Message{{ID: "test-id", Content: "test-content", Status: model.StatusSent}}
+	expectedMessages := []*model.Message{{ID: "test-id", Content: "test-content", Status: model.StatusSent}}
 	mockMessageService := mocks.NewMockMessageService(mockController)
 	mockMessageService.
 		EXPECT().
@@ -34,7 +34,7 @@ func TestGetMessages_GivenStatus_ThenItShouldReturnMessages(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/test?status=SENT", nil)
 	resp, _ := app.Test(req, -1)
 
-	var actualMessages []model.Message
+	var actualMessages []*model.Message
 	body, _ := io.ReadAll(resp.Body)
 	json.Unmarshal(body, &actualMessages)
 

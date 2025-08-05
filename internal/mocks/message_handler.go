@@ -41,10 +41,10 @@ func (m *MockMessageService) EXPECT() *MockMessageServiceMockRecorder {
 }
 
 // GetMessages mocks base method.
-func (m *MockMessageService) GetMessages(status model.Status) ([]model.Message, error) {
+func (m *MockMessageService) GetMessages(status model.Status) ([]*model.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMessages", status)
-	ret0, _ := ret[0].([]model.Message)
+	ret0, _ := ret[0].([]*model.Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

@@ -1,6 +1,6 @@
 package model
 
-const MessageCharLimit = 10
+const MessageCharLimit = 50
 
 type Message struct {
 	ID               string `json:"id"`
@@ -10,6 +10,6 @@ type Message struct {
 	Status           Status `json:"status"`
 }
 
-func (m Message) IsValid() bool {
+func (m *Message) IsValid() bool {
 	return len(m.Content) <= MessageCharLimit
 }

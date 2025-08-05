@@ -41,7 +41,7 @@ func (m *MockCacheRepository) EXPECT() *MockCacheRepositoryMockRecorder {
 }
 
 // SetMessage mocks base method.
-func (m *MockCacheRepository) SetMessage(metadata model.TransferMetadata) error {
+func (m *MockCacheRepository) SetMessage(metadata *model.TransferMetadata) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SetMessage", metadata)
 	ret0, _ := ret[0].(error)
@@ -79,10 +79,10 @@ func (m *MockMessageRepository) EXPECT() *MockMessageRepositoryMockRecorder {
 }
 
 // GetMessagesByStatus mocks base method.
-func (m *MockMessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error) {
+func (m *MockMessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]*model.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetMessagesByStatus", status, limit)
-	ret0, _ := ret[0].([]model.Message)
+	ret0, _ := ret[0].([]*model.Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -94,10 +94,10 @@ func (mr *MockMessageRepositoryMockRecorder) GetMessagesByStatus(status, limit a
 }
 
 // UpdateMessageStatus mocks base method.
-func (m *MockMessageRepository) UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error) {
+func (m *MockMessageRepository) UpdateMessageStatus(msg *model.Message, status model.Status) (*model.Message, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateMessageStatus", msg, status)
-	ret0, _ := ret[0].(model.Message)
+	ret0, _ := ret[0].(*model.Message)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -133,7 +133,7 @@ func (m *MockMessageClient) EXPECT() *MockMessageClientMockRecorder {
 }
 
 // Send mocks base method.
-func (m *MockMessageClient) Send(message model.Message) (*model.TransferMetadata, error) {
+func (m *MockMessageClient) Send(message *model.Message) (*model.TransferMetadata, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Send", message)
 	ret0, _ := ret[0].(*model.TransferMetadata)
