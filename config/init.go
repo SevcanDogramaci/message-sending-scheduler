@@ -8,7 +8,7 @@ import (
 )
 
 func InitConfigs(env string) (*AppConfig, error) {
-	filePath := fmt.Sprintf("../.configs/%s.json", env)
+	filePath := fmt.Sprintf("./.configs/%s.json", env)
 	jsonFile, err := os.Open(filePath)
 	if err != nil {
 		return nil, err

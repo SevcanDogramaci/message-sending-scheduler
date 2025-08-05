@@ -3,7 +3,7 @@
         "period_secs": 120
     },
     "couchbase": {
-        "host": "couchbase:8091",
+        "host": "localhost:8091",
         "username": "Administrator",
         "password": "password",
         "wait_until_ready_secs": 5
@@ -13,7 +13,7 @@
         "api_key": "INS.me1x9uMcyYGlhKKQVPoc.bO3j9aZwRTOcA2Ywo"
     },
     "redis": {
-        "host": "redis:6379",
+        "host": "localhost:6379",
         "password": "password",
         "db": 0,
         "ttl_secs": 3600

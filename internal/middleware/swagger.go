@@ -8,7 +8,7 @@ import (
 func InitSwagger(app *fiber.App) {
 	cfg := swagger.Config{
 		BasePath: "/",
-		FilePath: "../docs/swagger.json",
+		FilePath: "./docs/swagger.json",
 		Path:     "/",
 	}
 

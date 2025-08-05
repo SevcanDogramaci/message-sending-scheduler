@@ -1,5 +1,5 @@
 run:
-	cd ./cmd && export APP_ENV=dev && go run main.go
+	export APP_ENV=local && go run main.go
 
 mocks:
 	mockgen -source=internal/handler/message_handler.go -destination=internal/mocks/message_handler.go -package mocks

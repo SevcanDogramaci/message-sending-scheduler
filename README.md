@@ -24,7 +24,7 @@ Configuration files are put in `.configs` folder. Please add your configs accord
 
 ## How to run
 
-1. Assuming you have Docker installed in your system run the following command:
+1. Assuming you have Docker installed in your system run the following command in the terminal:
 
 ```
 docker-compose up --build
@@ -37,6 +37,8 @@ docker-compose up --build
 4. Add documents to the _default collection to test.
 
 NOTE: An example json document can be found in `/samples` folder.
+
+5. If you get a connection timeout, run `docker start go-app` in another terminal to start the application.
 
 ## How to test
 
