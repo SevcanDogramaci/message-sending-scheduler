@@ -6,6 +6,8 @@ require github.com/stretchr/testify v1.10.0
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/tools v0.22.0 // indirect
 )
@@ -46,6 +48,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/redis/go-redis/v9 v9.11.0
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/swaggo/swag v1.16.6
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
