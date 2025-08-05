@@ -2,26 +2,34 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/model"
-	"github.com/redis/go-redis/v9"
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/redis"
 )
 
 type CacheRepository struct {
-	redisClient *redis.Client
+	redis *redis.Redis
 }
 
-func NewCacheRepository(client *redis.Client) *CacheRepository {
-	return &CacheRepository{redisClient: client}
+func NewCacheRepository(redis *redis.Redis) *CacheRepository {
+	return &CacheRepository{redis: redis}
 }
 
 func (r *CacheRepository) SetMessage(transferMetadata model.TransferMetadata) error {
-	status := r.redisClient.Set(
+	ttl := time.Duration(r.redis.Config.DefaultTTLSecs) * time.Second
+
+	transferMetadataBytes, err := json.Marshal(transferMetadata)
+	if err != nil {
+		return err
+	}
+
+	status := r.redis.Client.Set(
 		context.Background(),
 		transferMetadata.ID,
-		transferMetadata,
-		time.Duration(1),
+		transferMetadataBytes,
+		ttl,
 	)
 
 	return status.Err()

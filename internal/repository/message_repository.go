@@ -2,22 +2,23 @@ package repository
 
 import (
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/model"
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
 	"github.com/couchbase/gocb/v2"
 )
 
 type MessageRepository struct {
-	cluster *gocb.Cluster
+	couchbase *couchbase.Couchbase
 }
 
-func NewMessageRepository(cluster *gocb.Cluster) *MessageRepository {
-	return &MessageRepository{cluster: cluster}
+func NewMessageRepository(couchbase *couchbase.Couchbase) *MessageRepository {
+	return &MessageRepository{couchbase: couchbase}
 }
 
 const MessageLimit = 2
 
 func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error) {
 	query := "SELECT u.* FROM messages AS u WHERE u.status = $status LIMIT $limit"
-	result, err := r.cluster.Query(query, &gocb.QueryOptions{
+	result, err := r.couchbase.Cluster.Query(query, &gocb.QueryOptions{
 		NamedParameters: map[string]any{
 			"status": status,
 			"limit":  limit,
@@ -46,7 +47,7 @@ func (r *MessageRepository) GetMessagesByStatus(status model.Status, limit int) 
 func (r *MessageRepository) UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error) {
 	msg.Status = status
 
-	_, err := r.cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)
+	_, err := r.couchbase.Cluster.Bucket("messages").DefaultCollection().Upsert(msg.ID, msg, nil)
 	if err != nil {
 		return msg, err
 	}

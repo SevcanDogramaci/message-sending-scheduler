@@ -26,9 +26,10 @@ func TestInitConfig_GivenEnv_ThenItShouldReadConfig(t *testing.T) {
 			APIKey: "test-api-key",
 		},
 		Redis: &redis.Config{
-			Host:     "test:6379",
-			Password: "test-password",
-			DB:       1,
+			Host:           "test:6379",
+			Password:       "test-password",
+			DB:             1,
+			DefaultTTLSecs: 10,
 		},
 	}
 	actualConfig, err := config.InitConfigs(env)

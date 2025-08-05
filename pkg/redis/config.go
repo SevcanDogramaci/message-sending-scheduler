@@ -1,7 +1,8 @@
 package redis
 
 type Config struct {
-	Host     string `json:"host"`
-	Password string `json:"password"`
-	DB       int    `json:"db"`
+	Host           string `json:"host"`
+	Password       string `json:"password"`
+	DB             int    `json:"db"`
+	DefaultTTLSecs int    `json:"ttl_secs"`
 }

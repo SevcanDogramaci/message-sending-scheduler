@@ -10,7 +10,8 @@ import (
 var ctx = context.Background()
 
 type Redis struct {
-	Rdb *redis.Client
+	Config *Config
+	Client *redis.Client
 }
 
 func NewRedis(config *Config) (*Redis, error) {
@@ -25,13 +26,13 @@ func NewRedis(config *Config) (*Redis, error) {
 		return nil, err
 	}
 
-	return &Redis{Rdb: client}, nil
+	return &Redis{Config: config, Client: client}, nil
 }
 
 func (c *Redis) Set(key string, value any, ttl time.Duration) error {
-	return c.Rdb.Set(ctx, key, value, ttl).Err()
+	return c.Client.Set(ctx, key, value, ttl).Err()
 }
 
 func (c *Redis) Get(key string) (any, error) {
-	return c.Rdb.Get(ctx, key).Result()
+	return c.Client.Get(ctx, key).Result()
 }

@@ -7,6 +7,7 @@ import (
 )
 
 type Couchbase struct {
+	Config  *Config
 	Cluster *gocb.Cluster
 }
 
@@ -16,7 +17,7 @@ func NewCouchbase(config *Config) (*Couchbase, error) {
 		return nil, err
 	}
 
-	return &Couchbase{Cluster: cluster}, nil
+	return &Couchbase{Config: config, Cluster: cluster}, nil
 }
 
 func connect(config *Config) (*gocb.Cluster, error) {

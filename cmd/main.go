@@ -34,8 +34,8 @@ func main() {
 	}
 
 	webhookClient := client.NewWebhookSiteClient(appConfig.Webhook)
-	messageRepository := repository.NewMessageRepository(cb.Cluster)
-	cacheRepository := repository.NewCacheRepository(redis.Rdb)
+	messageRepository := repository.NewMessageRepository(cb)
+	cacheRepository := repository.NewCacheRepository(redis)
 
 	messageService := service.NewMessageService(webhookClient, messageRepository, cacheRepository)
 	schedulerService := scheduler.NewScheduler(appConfig.Scheduler, messageService)
