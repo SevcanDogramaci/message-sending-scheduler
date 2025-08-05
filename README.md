@@ -17,6 +17,10 @@ Configuration files are put in `.configs` folder. Please add your configs accord
 | couchbase.wait_until_ready_secs |  This field is used to set seconds to wait until your Couchbase instance is ready.   |
 | webhook.url               |  This field is used to set webhook.site url. |
 | webhook.api_key           |  This field is used to set key in x-ins-auth-key header. |
+| redis.host           |  This field is used to set host name of your Redis instance. |
+| redis.password           |  This field is used to set password of your Redis instance. |
+| redis.db           |  This field is used to set db of your Redis instance. |
+| redis.ttl_secs           |  This field is used to ttl seconds in Redis instance. |
 
 ## How to run
 
@@ -41,6 +45,9 @@ make tests
 ```
 
 ## To generate swagger docs
+
+Swagger docs are located in main path of your application. Go to <http://localhost:8080>.
+
 ```
 swag init -g cmd/main.go -o docs --parseDependency --parseInternal
 ```
