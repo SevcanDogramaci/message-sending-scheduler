@@ -15,7 +15,7 @@ func TestGetMessages_GivenValidStatus_ThenItShouldReturnMessages(t *testing.T) {
 	defer mockController.Finish()
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
-	msgService := service.NewMessageService(mockRepository, nil)
+	msgService := service.NewMessageService(nil, mockRepository, nil)
 
 	expectedMessages := []model.Message{{ID: "1", Status: model.StatusUnsent}}
 	mockRepository.
@@ -33,7 +33,7 @@ func TestGetMessages_GivenInvalidStatus_ThenItShouldReturnError(t *testing.T) {
 	mockController := gomock.NewController(t)
 	defer mockController.Finish()
 
-	service := service.NewMessageService(nil, nil)
+	service := service.NewMessageService(nil, nil, nil)
 	actualMessages, err := service.GetMessages("INVALID")
 
 	assert.Error(t, err)
@@ -46,7 +46,7 @@ func TestGetMessages_GivenRepositoryError_ThenItShouldReturnError(t *testing.T) 
 	defer mockController.Finish()
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
-	msgService := service.NewMessageService(mockRepository, nil)
+	msgService := service.NewMessageService(nil, mockRepository, nil)
 
 	mockRepository.
 		EXPECT().
@@ -64,7 +64,7 @@ func TestGetMessages_GivenNoMessageFound_ThenItShouldReturnNotFoundError(t *test
 	defer mockController.Finish()
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
-	msgService := service.NewMessageService(mockRepository, nil)
+	msgService := service.NewMessageService(nil, mockRepository, nil)
 
 	mockRepository.
 		EXPECT().
@@ -83,20 +83,24 @@ func TestSendMessages_GivenUnsentMessages_ThenItShouldSendThem(t *testing.T) {
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
 	mockClient := mocks.NewMockMessageClient(mockController)
-	msgService := service.NewMessageService(mockRepository, mockClient)
+	mockCache := mocks.NewMockCacheRepository(mockController)
+	msgService := service.NewMessageService(mockClient, mockRepository, mockCache)
 
 	unsentMessages := []model.Message{
 		{ID: "1", Status: model.StatusUnsent},
 		{ID: "2", Status: model.StatusUnsent}}
+
+	transferMetadata := []model.TransferMetadata{{ID: "T1"}, {ID: "T2"}}
 
 	mockRepository.
 		EXPECT().
 		GetMessagesByStatus(model.StatusUnsent, service.SendMessageLimit).
 		Return(unsentMessages, nil)
 
-	for _, msg := range unsentMessages {
-		mockClient.EXPECT().Send(msg).Return(nil)
+	for i, msg := range unsentMessages {
+		mockClient.EXPECT().Send(msg).Return(&transferMetadata[i], nil)
 		mockRepository.EXPECT().UpdateMessageStatus(msg, model.StatusSent).Return(msg, nil)
+		mockCache.EXPECT().SetMessage(transferMetadata[i]).Return(nil)
 	}
 
 	err := msgService.SendMessages()
@@ -109,7 +113,7 @@ func TestSendMessages_GivenNoMessages_ThenItShouldReturnNotFoundError(t *testing
 	defer mockController.Finish()
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
-	msgService := service.NewMessageService(mockRepository, nil)
+	msgService := service.NewMessageService(nil, mockRepository, nil)
 
 	mockRepository.
 		EXPECT().
@@ -127,21 +131,24 @@ func TestSendMessages_GivenMessageWithLongContent_ThenItShouldRejectTheMessage(t
 
 	mockRepository := mocks.NewMockMessageRepository(mockController)
 	mockClient := mocks.NewMockMessageClient(mockController)
-	msgService := service.NewMessageService(mockRepository, mockClient)
+	mockCache := mocks.NewMockCacheRepository(mockController)
+	msgService := service.NewMessageService(mockClient, mockRepository, mockCache)
 
 	msgWithValidContent := model.Message{ID: "1", Status: model.StatusUnsent, Content: "proper"}
 	msgWithInvalidContent := model.Message{ID: "2", Status: model.StatusUnsent, Content: "veryveryveryverylongcontent"}
 
 	unsentMessages := []model.Message{msgWithValidContent, msgWithInvalidContent}
+	transferMetadata := model.TransferMetadata{ID: "T1"}
 
 	mockRepository.
 		EXPECT().
 		GetMessagesByStatus(model.StatusUnsent, service.SendMessageLimit).
 		Return(unsentMessages, nil)
 
-	mockClient.EXPECT().Send(unsentMessages[0]).Return(nil)
+	mockClient.EXPECT().Send(unsentMessages[0]).Return(&transferMetadata, nil)
 	mockRepository.EXPECT().UpdateMessageStatus(msgWithValidContent, model.StatusSent).Return(msgWithValidContent, nil)
 	mockRepository.EXPECT().UpdateMessageStatus(msgWithInvalidContent, model.StatusRejected).Return(msgWithInvalidContent, nil)
+	mockCache.EXPECT().SetMessage(transferMetadata).Return(nil)
 
 	err := msgService.SendMessages()
 

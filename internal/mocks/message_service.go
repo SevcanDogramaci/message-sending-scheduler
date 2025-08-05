@@ -16,6 +16,44 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
+// MockCacheRepository is a mock of CacheRepository interface.
+type MockCacheRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockCacheRepositoryMockRecorder
+	isgomock struct{}
+}
+
+// MockCacheRepositoryMockRecorder is the mock recorder for MockCacheRepository.
+type MockCacheRepositoryMockRecorder struct {
+	mock *MockCacheRepository
+}
+
+// NewMockCacheRepository creates a new mock instance.
+func NewMockCacheRepository(ctrl *gomock.Controller) *MockCacheRepository {
+	mock := &MockCacheRepository{ctrl: ctrl}
+	mock.recorder = &MockCacheRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockCacheRepository) EXPECT() *MockCacheRepositoryMockRecorder {
+	return m.recorder
+}
+
+// SetMessage mocks base method.
+func (m *MockCacheRepository) SetMessage(metadata model.TransferMetadata) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetMessage", metadata)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetMessage indicates an expected call of SetMessage.
+func (mr *MockCacheRepositoryMockRecorder) SetMessage(metadata any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetMessage", reflect.TypeOf((*MockCacheRepository)(nil).SetMessage), metadata)
+}
+
 // MockMessageRepository is a mock of MessageRepository interface.
 type MockMessageRepository struct {
 	ctrl     *gomock.Controller
@@ -95,11 +133,12 @@ func (m *MockMessageClient) EXPECT() *MockMessageClientMockRecorder {
 }
 
 // Send mocks base method.
-func (m *MockMessageClient) Send(message model.Message) error {
+func (m *MockMessageClient) Send(message model.Message) (*model.TransferMetadata, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Send", message)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*model.TransferMetadata)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Send indicates an expected call of Send.

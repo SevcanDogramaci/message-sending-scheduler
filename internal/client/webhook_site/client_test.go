@@ -44,8 +44,11 @@ func TestWebhookClient_GivenUnsentMessage_ThenItShouldSendIt(t *testing.T) {
 		APIKey: testWebhookSiteAPIKey,
 	})
 
-	err := client.Send(message)
+	metadata, err := client.Send(message)
+
 	assert.NoError(t, err)
+	assert.NotNil(t, metadata)
+	assert.Equal(t, "02aa861c-27d4-4f0e-a77b-3720794376e8", metadata.ID)
 }
 
 func TestWebhookClient_GivenUnsuccessfulResponse_ThenItShouldReturnError(t *testing.T) {
@@ -61,6 +64,28 @@ func TestWebhookClient_GivenUnsuccessfulResponse_ThenItShouldReturnError(t *test
 		APIKey: testWebhookSiteAPIKey,
 	})
 
-	err := client.Send(message)
+	metadata, err := client.Send(message)
+
 	assert.Error(t, err)
+	assert.Nil(t, metadata)
+}
+
+func TestWebhookClient_GivenBrokenResponse_ThenItShouldReturnError(t *testing.T) {
+	message := model.Message{}
+
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.WriteHeader(http.StatusAccepted)
+		rw.Write([]byte(`{"message": "Accepted","messageId": 111`))
+	}))
+	defer server.Close()
+
+	client := client.NewWebhookSiteClient(&config.ClientConfig{
+		URL:    server.URL,
+		APIKey: testWebhookSiteAPIKey,
+	})
+
+	metadata, err := client.Send(message)
+
+	assert.Error(t, err)
+	assert.Nil(t, metadata)
 }

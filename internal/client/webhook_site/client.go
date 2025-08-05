@@ -20,25 +20,20 @@ func NewWebhookSiteClient(config *config.ClientConfig) *WebhookSiteClient {
 	return &WebhookSiteClient{url: config.URL, apiKey: config.APIKey}
 }
 
-type MessageDTO struct {
-	To      string `json:"to"`
-	Content string `json:"content"`
-}
-
-func (c *WebhookSiteClient) Send(message model.Message) error {
-	messageDTO := MessageDTO{
+func (c *WebhookSiteClient) Send(message model.Message) (*model.TransferMetadata, error) {
+	messageDTO := MessageRequest{
 		To:      message.RecipientPhoneNo,
 		Content: message.Content,
 	}
 
 	messageJSON, err := json.Marshal(messageDTO)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	request, err := http.NewRequest(http.MethodPost, c.url, bytes.NewBuffer(messageJSON))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	request.Header.Set("Content-Type", "application/json")
@@ -46,18 +41,23 @@ func (c *WebhookSiteClient) Send(message model.Message) error {
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer response.Body.Close()
 
 	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if response.StatusCode != http.StatusAccepted {
-		return fmt.Errorf("Error occurred while sending request - Body: %s", responseBody)
+		return nil, fmt.Errorf("Error occurred while sending request - Body: %s", responseBody)
 	}
 
-	return nil
+	var messageResponse MessageResponse
+	if err := json.Unmarshal(responseBody, &messageResponse); err != nil {
+		return nil, fmt.Errorf("Error occurred while parsing response - Body: %s", responseBody)
+	}
+
+	return messageResponse.ToTransferMetadata(), nil
 }

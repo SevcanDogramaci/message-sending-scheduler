@@ -5,24 +5,30 @@ import (
 	"github.com/gofiber/fiber/v2/log"
 )
 
+type CacheRepository interface {
+	SetMessage(metadata model.TransferMetadata) error
+}
+
 type MessageRepository interface {
-	GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error) // add limit
+	GetMessagesByStatus(status model.Status, limit int) ([]model.Message, error)
 	UpdateMessageStatus(msg model.Message, status model.Status) (model.Message, error)
 }
 
 type MessageClient interface {
-	Send(message model.Message) error
+	Send(message model.Message) (*model.TransferMetadata, error)
 }
 
 type MessageService struct {
-	repository MessageRepository
 	client     MessageClient
+	repository MessageRepository
+	cache      CacheRepository
 }
 
-func NewMessageService(repository MessageRepository, client MessageClient) *MessageService {
+func NewMessageService(client MessageClient, repository MessageRepository, cache CacheRepository) *MessageService {
 	return &MessageService{
-		repository: repository,
 		client:     client,
+		repository: repository,
+		cache:      cache,
 	}
 }
 
@@ -67,7 +73,7 @@ func (ms *MessageService) SendMessages() error {
 			continue
 		}
 
-		err := ms.client.Send(msg)
+		transferMetadata, err := ms.client.Send(msg)
 		if err != nil {
 			return err
 		}
@@ -76,6 +82,12 @@ func (ms *MessageService) SendMessages() error {
 		if err != nil {
 			log.Error("[ACTION REQUIRED] Failed to update message status:", err)
 			return model.ErrorMessageStatusNotUpdated
+		}
+
+		err = ms.cache.SetMessage(*transferMetadata)
+		if err != nil {
+			log.Errorf("Failed to cache message with transfer id: %s", transferMetadata.ID)
+			return model.ErrorMessageTransferNotCached
 		}
 	}
 

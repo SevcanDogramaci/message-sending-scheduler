@@ -12,6 +12,7 @@ import (
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/scheduler"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/service"
 	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
+	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/redis"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -27,10 +28,16 @@ func main() {
 		log.Fatalf("Failed to connect to Couchbase: %v", err)
 	}
 
+	redis, err := redis.NewRedis(appConfig.Redis)
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+
 	webhookClient := client.NewWebhookSiteClient(appConfig.Webhook)
 	messageRepository := repository.NewMessageRepository(cb.Cluster)
+	cacheRepository := repository.NewCacheRepository(redis.Rdb)
 
-	messageService := service.NewMessageService(messageRepository, webhookClient)
+	messageService := service.NewMessageService(webhookClient, messageRepository, cacheRepository)
 	schedulerService := scheduler.NewScheduler(appConfig.Scheduler, messageService)
 
 	messageHandler := handler.NewMessageHandler(messageService)
