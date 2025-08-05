@@ -7,11 +7,11 @@ import (
 	"github.com/SevcanDogramaci/message-sending-scheduler/config"
 	client "github.com/SevcanDogramaci/message-sending-scheduler/internal/client/webhook-site"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/handler"
+	"github.com/SevcanDogramaci/message-sending-scheduler/internal/middleware"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/repository"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/scheduler"
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/service"
 	"github.com/SevcanDogramaci/message-sending-scheduler/pkg/couchbase"
-	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -36,14 +36,8 @@ func main() {
 	messageHandler := handler.NewMessageHandler(messageService)
 	schedulerHandler := handler.NewSchedulerHandler(schedulerService)
 
-	app := fiber.New()
-	cfg := swagger.Config{
-		BasePath: "/",
-		FilePath: "../docs/swagger.json",
-		Path:     "/",
-	}
-
-	app.Use(swagger.New(cfg))
+	app := fiber.New(fiber.Config{ErrorHandler: middleware.InitErrorHandler})
+	middleware.InitSwagger(app)
 
 	handler.InitHandlers(app, messageHandler, schedulerHandler)
 	schedulerService.Start()

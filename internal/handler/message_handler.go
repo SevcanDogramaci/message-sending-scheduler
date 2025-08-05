@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"errors"
-
 	"github.com/SevcanDogramaci/message-sending-scheduler/internal/model"
 	"github.com/gofiber/fiber/v2"
 )
@@ -31,14 +29,6 @@ func (h *MessageHandler) GetMessages(c *fiber.Ctx) error {
 	messageStatus := model.Status(c.Query("status"))
 	messages, err := h.messageService.GetMessages(messageStatus)
 	if err != nil {
-		if errors.Is(err, model.ErrorInvalidMessageStatus) { // TODO: put here to middleware
-			return fiber.ErrBadRequest
-		}
-
-		if errors.Is(err, model.ErrorMessageNotFound) {
-			return fiber.ErrNotFound
-		}
-
 		return err
 	}
 

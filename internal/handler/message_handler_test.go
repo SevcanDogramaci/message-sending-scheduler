@@ -61,23 +61,3 @@ func TestGetMessages_GivenServiceFails_ThenItShouldReturnInternalServerError(t *
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 }
-
-func TestGetMessages_GivenNoMessageFound_ThenItShouldReturnNotFoundError(t *testing.T) {
-	mockController := gomock.NewController(t)
-	defer mockController.Finish()
-
-	mockMessageService := mocks.NewMockMessageService(mockController)
-	mockMessageService.
-		EXPECT().
-		GetMessages(model.StatusSent).
-		Return(nil, model.ErrorMessageNotFound)
-	handler := handler.NewMessageHandler(mockMessageService)
-
-	app := fiber.New()
-	app.Get("/test", handler.GetMessages)
-
-	req := httptest.NewRequest(http.MethodGet, "/test?status=SENT", nil)
-	resp, _ := app.Test(req, -1)
-
-	assert.Equal(t, http.StatusNotFound, resp.StatusCode)
-}
